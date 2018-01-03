@@ -102,20 +102,66 @@ $config = [];
 //        ],
 //    ],
 //];
+$config_s3 = [
+    'logger' => [
+        'enabled' => true,
+        'file' => '/var/log/filemanager.log',
+    ],
+];
+$config = [
+    'security' => [
+        'readOnly' => false,
+        'extensions' => [
+            'policy' => 'ALLOW_LIST',
+            'restrictions' => [
+                'jpg',
+                'jpe',
+                'jpeg',
+                'gif',
+               'png',
+                'html',
+            ],
+        ],
+    ],
+];
+$config_s3 = [
+    'images' => [
+        'thumbnail' => [
+            'dir' => 's3_thumbs',
+            'useLocalStorage' => false,
+        ],
+    ],
+    'credentials' => [
+        'region' => 'ap-south-1',
+        'bucket' => 'meetfilemanager',
+        'credentials' => [
+            'key' => 'AKIAIMUSG3YUG5RWKTCQ',
+            'secret' => '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',
+        ],
+        'defaultAcl' => \RFM\Repository\S3\StorageHelper::ACL_PUBLIC_READ,
+        'debug' => false,
+    ],
+];
+$config_s3['encryption'] = 'AES256';
 
 $app = new \RFM\Application();
 
 // uncomment to use events
 //$app->registerEventsListeners();
 
-$local = new \RFM\Repository\Local\Storage($config);
+//$local = new \RFM\Repository\Local\Storage($config);
 
+//$local->setRoot('http://34.209.247.97/filemanager/connectors/php/filemanager.php?mode=readfile&path=/', false,true);
 // example to setup files root folder
-//$local->setRoot('userfiles', true);
 
-$app->setStorage($local);
+//$app->setStorage($local);
 
 // set application API
-$app->api = new RFM\Api\LocalApi();
-
+//$app->api = new RFM\Api\LocalApi();
+// AWS S3 storage instance
+$s3 = new \RFM\Repository\S3\Storage($config_s3);
+$app->setStorage($s3);
+// AWS S3 API
+$s3->setRoot('userfiles', true);
+$app->api = new RFM\Api\AwsS3Api();
 $app->run();
