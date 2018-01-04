@@ -135,8 +135,8 @@ $config_s3 = [
         'region' => 'ap-south-1',
         'bucket' => 'meetfilemanager',
         'credentials' => [
-            'key' => 'AKIAIMUSG3YUG5RWKTCQ',
-            'secret' => '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',
+            'key' => 'AKIAJURZGGKHQSRQ6ZHQ',
+            'secret' =>'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',
         ],
         'defaultAcl' => \RFM\Repository\S3\StorageHelper::ACL_PUBLIC_READ,
         'debug' => false,

@@ -9,6 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="scripts/jquery.contextmenu/dist/jquery.contextMenu.min.css" />
 	<link rel="stylesheet" type="text/css" href="scripts/custom-scrollbar-plugin/jquery.mCustomScrollbar.min.css" />
 	<link rel="stylesheet" type="text/css" href="scripts/alertify.js/dist/css/alertify.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+ 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 
 	<style type="text/css">
 		.fm-container .fm-loading-wrap {
@@ -24,8 +28,41 @@
 		}
 	</style>
 	<!-- CSS dynamically added using 'config.options.theme' defined in config file -->
-</head>
+	<script>
+		// Create a client instance
+		client = new Paho.MQTT.Client('34.209.247.97', Number(80), "clientId");
 
+		// set callback handlers
+		client.onConnectionLost = onConnectionLost;
+		client.onMessageArrived = onMessageArrived;
+
+		// connect the client
+		client.connect({onSuccess:onConnect});
+
+
+		// called when the client connects
+		function onConnect() {
+		  // Once a connection has been made, make a subscription and send a message.
+		  console.log("onConnect");
+		  client.subscribe("World");
+		  message = new Paho.MQTT.Message("Hello");
+		  message.destinationName = "World";
+		  client.send(message);
+		}
+
+		// called when the client loses its connection
+		function onConnectionLost(responseObject) {
+		  if (responseObject.errorCode !== 0) {
+		    console.log("onConnectionLost:"+responseObject.errorMessage);
+		  }		
+		}
+
+		// called when a message arrives
+		function onMessageArrived(message) {
+		  console.log("onMessageArrived:"+message.payloadString);
+		}
+	</script>
+</head>
 <body>
 <div class="fm-container">
 	<div class="fm-loading-wrap"><!-- loading wrapper / removed when loaded --></div>
